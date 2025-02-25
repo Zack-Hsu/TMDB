@@ -4,6 +4,7 @@ import { types } from "util";
 import { useSearchParams } from "next/navigation";
 import BaseLayout from "@/elements/layouts/BaseLayout";
 import Image from "next/image";
+import infinityScroll from "@/lib/infinityScroll";
 
 interface Session {
     success: boolean;
@@ -39,9 +40,9 @@ interface Movie {
 }
 
 
-const fetchMovies = async (query: string = '') => {
+const fetchMovies = async (query: string = '', page: number = 1) => {
     const API_KEY = "367a786553f6d6acd23b37641e73be0b";
-    const url = `https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&query=${query}`;
+    const url = `https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&query=${query}&page=${page}`;
     const response = await axios.get(url);
     return response.data;
 };
@@ -124,6 +125,18 @@ export default function MovieSearch() {
         }
     }, [session])
     useEffect(() => {
+        if (data?.results?.length) {
+            infinityScroll(() => {
+                fetchMovies(query, data.page + 1)
+                    .then((res: Movie) => {
+                        let results = [...data.results, ...res.results]
+                        res.results = results
+                        setData(res)
+                    })
+            })
+        }
+    }, [data])
+    useEffect(() => {
         fetchMovies(query).then((data) => setData(data)) // 取得m 列表
         createRequestToken().then((res) => setRequestToken(res.data)) // 取得request_token
         const approved = new URLSearchParams(location.search).get("approved") // 查看是否callback approved
@@ -133,7 +146,6 @@ export default function MovieSearch() {
             createSession(callBackRequestToken).then((res) => setSession(res.data)).catch((err) => setSession({ success: false, session_id: '' }))
         }
     }, [])
-    console.log(userInformation);
     return (
         <BaseLayout>
             <div className="container" data-bs-theme="dark">
