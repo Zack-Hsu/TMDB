@@ -3,7 +3,7 @@ name: Deploy Next.js to GitHub Pages
 on:
   push:
     branches:
-      - main  # 監聽 main 分支的變更
+      - master  # 監聽 main 分支的變更
 
 permissions:
   contents: write
