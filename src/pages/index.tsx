@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { types } from "util";
-import { useSearchParams } from "next/navigation";
 import BaseLayout from "@/elements/layouts/BaseLayout";
 import Image from "next/image";
 import infinityScroll from "@/lib/infinityScroll";
@@ -39,6 +37,22 @@ interface Movie {
     total_results: number;
 }
 
+interface UserInformation {
+    avatar: {
+        gravatar: {
+            hash: string
+        },
+        tmdb: {
+            avatar_path: string
+        }
+    },
+    id: number,
+    iso_639_1: string,
+    iso_3166_1: string,
+    name: string,
+    include_adult: boolean,
+    username: string
+}
 
 const fetchMovies = async (query: string = '', page: number = 1) => {
     const API_KEY = "367a786553f6d6acd23b37641e73be0b";
@@ -115,13 +129,16 @@ export default function MovieSearch() {
     const [requestToken, setRequestToken] = useState<RequestToken>()
     const [data, setData] = useState<Movie>()
     const [session, setSession] = useState<Session>({ success: false, session_id: '' })
-    const [userInformation, setUserInformation] = useState<any>(null)
+    const [userInformation, setUserInformation] = useState<UserInformation | null>(null)
     useEffect(() => {
         fetchMovies(query).then((data) => setData(data))
     }, [query])
     useEffect(() => {
         if (session.success) {
-            GetUserInformation(session.session_id).then((res) => setUserInformation(res.data)).catch((err) => setUserInformation(null))
+            GetUserInformation(session.session_id).then((res) => setUserInformation(res.data)).catch((err) => {
+                setUserInformation(null)
+                console.log(err);
+            })
         }
     }, [session])
     useEffect(() => {
@@ -129,13 +146,13 @@ export default function MovieSearch() {
             infinityScroll(() => {
                 fetchMovies(query, data.page + 1)
                     .then((res: Movie) => {
-                        let results = [...data.results, ...res.results]
+                        const results = [...data.results, ...res.results]
                         res.results = results
                         setData(res)
                     })
             })
         }
-    }, [data])
+    }, [data, query])
     useEffect(() => {
         fetchMovies(query).then((data) => setData(data)) // 取得m 列表
         createRequestToken().then((res) => setRequestToken(res.data)) // 取得request_token
@@ -143,7 +160,10 @@ export default function MovieSearch() {
         const callBackRequestToken = new URLSearchParams(location.search).get("request_token") // 查看是否callback request token
         if (approved && callBackRequestToken) {
             setRequestToken({ request_token: callBackRequestToken, expires_at: requestToken?.expires_at, success: true })
-            createSession(callBackRequestToken).then((res) => setSession(res.data)).catch((err) => setSession({ success: false, session_id: '' }))
+            createSession(callBackRequestToken).then((res) => setSession(res.data)).catch((err) => {
+                setSession({ success: false, session_id: '' })
+                console.log(err);
+            })
         }
     }, [])
     return (
@@ -166,7 +186,7 @@ export default function MovieSearch() {
                                     <Image src={fullImageUrl} width={0}
                                         height={0}
                                         sizes="100vw"
-                                        style={{ width: '100%', height: 'auto' }}
+                                        style={{ width: '100%', height: '300px', objectFit: "cover" }}
                                         className="card-img-top" alt="Waves"
                                     />
                                     <div className="card-body">

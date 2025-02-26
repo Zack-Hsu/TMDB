@@ -1,7 +1,6 @@
 
-
-export default function (action: any) {
-    let scrollTimeout: any
+export default function infinityScroll(action: () => void) {
+    let scrollTimeout: ReturnType<typeof setTimeout>;
     const isScrolledToBottom = () => {
         return window.innerHeight + window.scrollY >= document.body.offsetHeight - 10;
     }
