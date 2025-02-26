@@ -26,6 +26,9 @@ jobs:
       - name: Export Next.js static site
         run: npm run build
 
+      - name: Show _next directory
+        run: touch out/.nojekyll
+
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
