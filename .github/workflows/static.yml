@@ -24,7 +24,7 @@ jobs:
         run: npm install
 
       - name: Export Next.js static site
-        run: npm run export
+        run: npm run build
 
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
