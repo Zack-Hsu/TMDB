@@ -1,12 +1,16 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import BaseLayout from "@/elements/layouts/BaseLayout";
 import Image from "next/image";
 import infinityScroll from "@/lib/infinityScroll";
+import { Provider as ReduxProvider, useSelector } from 'react-redux';
+import SearchMovieBar from "@/elements/components/SearchMovieBar/SearchMovieBar";
+
 
 interface Session {
     success: boolean;
     session_id: string;
+    errLog?: string
 }
 
 interface RequestToken {
@@ -130,9 +134,11 @@ export default function MovieSearch() {
     const [data, setData] = useState<Movie>()
     const [session, setSession] = useState<Session>({ success: false, session_id: '' })
     const [userInformation, setUserInformation] = useState<UserInformation | null>(null)
+    const [idx, setIdx] = useState(0)
+    const { searchMovieName } = useSelector((state: any) => state.searchMovie)
     useEffect(() => {
         fetchMovies(query).then((data) => setData(data))
-    }, [query])
+    }, [searchMovieName])
     useEffect(() => {
         if (session.success) {
             GetUserInformation(session.session_id).then((res) => setUserInformation(res.data)).catch((err) => {
@@ -154,15 +160,13 @@ export default function MovieSearch() {
         }
     }, [data, query])
     useEffect(() => {
-        fetchMovies(query).then((data) => setData(data)) // 取得m 列表
         createRequestToken().then((res) => setRequestToken(res.data)) // 取得request_token
         const approved = new URLSearchParams(location.search).get("approved") // 查看是否callback approved
         const callBackRequestToken = new URLSearchParams(location.search).get("request_token") // 查看是否callback request token
         if (approved && callBackRequestToken) {
             setRequestToken({ request_token: callBackRequestToken, expires_at: requestToken?.expires_at, success: true })
             createSession(callBackRequestToken).then((res) => setSession(res.data)).catch((err) => {
-                setSession({ success: false, session_id: '' })
-                console.log(err);
+                setSession({ success: false, session_id: '', errLog: err })
             })
         }
     }, [])
@@ -177,6 +181,10 @@ export default function MovieSearch() {
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
                 />
+
+                <h1>測試</h1>
+                <SearchMovieBar query="" />
+                <div style={{ height: '120vh', width: '100%' }}></div>
                 <div className="row">
                     {data?.results?.map((movie) => {
                         const fullImageUrl = `https://image.tmdb.org/t/p/w500${movie.poster_path}`
