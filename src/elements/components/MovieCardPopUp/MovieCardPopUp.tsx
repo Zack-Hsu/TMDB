@@ -24,7 +24,7 @@ export default function MovieCardPopUp() {
                     addToWatchList(profile.id, session.session_id, activeMovie.id)
                         .then((res) => {
                             if (res.success) {
-                                (e.target as HTMLButtonElement).innerHTML = `<a href="/watch-list">前往查看待播放清單</a>`
+                                (e.target as HTMLButtonElement).innerHTML = `<a href="/TMDB/watch-list">前往查看待播放清單</a>`
                             }
                         })
                 }}>

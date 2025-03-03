@@ -74,9 +74,6 @@ export default function Index() {
             <div className="container" data-bs-theme="dark">
                 <LoginButton />
                 {Title}
-                <div className="w-100 d-flex flex-wrap justify-content-end fixed-bottom">
-                    <SortButtonGroup />
-                </div>
                 <div className="row mt-3">
                     {searchResult?.results?.map((movie: MovieResult) => {
                         return <MovieCard key={movie.id} movie={movie} />
@@ -86,6 +83,7 @@ export default function Index() {
                 <div className="">Current Page:{searchResult?.page}</div>
                 <div className="">Total Pages:{searchResult?.total_pages}</div>
             </div>
+            <SortButtonGroup />
         </BaseLayout >
     );
 }

@@ -9,7 +9,7 @@ const requestToken: RequestToken = {
     success: false,
 }
 
-const initSession: UserSession = { success: false, session_id: '' }; // 讀取 session
+export const initSession: UserSession = { success: false, session_id: '' }; // 讀取 session
 
 
 const profile: UserInformation = {
@@ -63,5 +63,4 @@ export const {
     setSession,
     setProfile
 } = slice.actions;
-
 export default slice.reducer;

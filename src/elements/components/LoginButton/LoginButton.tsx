@@ -3,16 +3,18 @@ import getTMDBRequestToken from "@/service/tmdb/getTMDBRequestToken";
 import { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RequestToken } from "@/types/store/states/requestToken-type";
-import { setProfile, setRequestToken, setSession } from "@/store/slices/user";
+import { initSession, setProfile, setRequestToken, setSession } from "@/store/slices/user";
 import createSession from "@/service/tmdb/createSession";
 import getUserInformation from "@/service/tmdb/getUserInformation";
 import { UserInformation } from "@/types/store/states/userInfomation-type";
 import { RootState } from "@/store";
 import Navigation from "@/elements/layouts/Navigation/Navigation";
+import Link from "next/link";
 //import useSessionFromLocalStorage from "@/lib/useSessionFromLocalStorage";
 
 export default function LoginButton() {
     const dispatch = useDispatch()
+    const [isShowUserDropDown, setIsShowUserDropDown] = useState<boolean>(false)
     const {
         requestToken,
         session,
@@ -66,18 +68,42 @@ export default function LoginButton() {
             }
         }
     }, [dispatch])
+    const WatchListLink = useMemo(() => {
+        if (session.success) {
+            return (<Link className="dropdown-item" href="/watch-list">待播清單</Link>
+            )
+        } else {
+            return <></>
+        }
+    }, [session])
     /** 已經登入就顯示Avatar，沒有的話顯示Login Button */
     const LoginToggle = useMemo(() => {
         if (profile.id && session.success) {
-            return <div className={styles.avatar}>
-                <h3>{profile.username[0]}</h3>
-            </div>
+            return (
+                <div className="dropdown">
+                    <div className="d-flex align-items-center">
+                        <div className={styles.avatar} onClick={() => setIsShowUserDropDown(!isShowUserDropDown)}>
+                            <h3>{profile.username[0]}</h3>
+                        </div>
+                        <div className="dropdown-toggle"></div>
+                    </div>
+                    <div className={`dropdown-menu ${isShowUserDropDown ? "show" : ''}`} style={{ right: 0 }}>
+                        <button className="dropdown-item"
+                            onClick={() => {
+                                dispatch(setSession(initSession))
+                                getTMDBRequestToken()
+                                    .then((res: RequestToken) => dispatch(setRequestToken(res)))
+                            }}>Log Out</button>
+                        {WatchListLink}
+                    </div>
+                </div>
+            )
         } else {
             return (
                 <a className="btn btn-primary" href={TMDBAuthUrl}>Login</a>
             )
         }
-    }, [profile, session, TMDBAuthUrl])
+    }, [profile, session, TMDBAuthUrl, isShowUserDropDown])
     return (
         <Navigation>
             {LoginToggle}
