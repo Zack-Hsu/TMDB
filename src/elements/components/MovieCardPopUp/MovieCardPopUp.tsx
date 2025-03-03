@@ -19,9 +19,18 @@ export default function MovieCardPopUp() {
             if (pathname == "/watch-list") {
                 return <button className="btn btn--primary">已加入清單</button>
             }
-            return <button className="btn btn--primary" onClick={() => {
-                addToWatchList(profile.id, session.session_id, activeMovie.id)
-            }}>Add to watch List</button>
+            return (
+                <button className="btn btn--primary" onClick={(e) => {
+                    addToWatchList(profile.id, session.session_id, activeMovie.id)
+                        .then((res) => {
+                            if (res.success) {
+                                (e.target as HTMLButtonElement).innerHTML = `<a href="/watch-list">前往查看待播放清單</a>`
+                            }
+                        })
+                }}>
+                    Add to watch List
+                </button>
+            )
         }
         else {
             return <></>
@@ -58,7 +67,7 @@ export default function MovieCardPopUp() {
         return (
             <div className={styles.popupOverlay}>
                 <div className={styles.popup}>
-                    <div className="w-100 d-flex justify-content-end mb-1 cursor-pointer" onClick={() => dispatch(setShowMovieDetail(false))}>
+                    <div className="w-100 d-flex justify-content-end mb-1 cursor-pointer" style={{ position: "fixed", height: "100vh", right: '1rem', top: '1rem' }} onClick={() => dispatch(setShowMovieDetail(false))}>
                         <svg xmlns="http://www.w3.org/2000/svg" width={30} height={30} fill="currentColor" className="bi bi-x-lg" viewBox="0 0 16 16">
                             <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z" />
                         </svg>

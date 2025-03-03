@@ -11,5 +11,5 @@ export default async function addToWatchList(userId: number, sessionId: string, 
         },
         data: { media_type: 'movie', media_id: movieId, watchlist: true }
     };
-    return axios.request(options)
+    return (await axios.request(options)).data
 }
