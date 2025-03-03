@@ -1,0 +1,13 @@
+.btn.btn--primary{
+    background: linear-gradient(to right, #9D50BB 0%, #6E48AA  51%, #9D50BB  100%);
+}
+.nav-item{
+    display: flex;
+    align-items: center;
+}
+.form-control{
+    max-width: 200px;
+}
+body{
+    scroll-behavior: smooth;
+}

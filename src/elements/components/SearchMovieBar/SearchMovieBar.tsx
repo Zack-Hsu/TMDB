@@ -1,17 +1,17 @@
+import "./SearchMovieBar.module.scss";
 import { useDispatch, useSelector } from "react-redux";
 import { setSearchMovieName } from "@/store/slices/searchMovie";
-import { useAppDispatch } from "@/store";
-export default function SearchMovieBar(props: { query: string }) {
-    const { query } = props;
-    const dispatch = useAppDispatch();
+import { RootState } from "@/store";
+export default function SearchMovieBar() {
+    const dispatch = useDispatch();
     return (
         <input
             type="text"
-            className="form-control"
+            className="form-control me-2"
             placeholder="Search for a movie..."
-            value={useSelector((state: any) => state.searchMoviceName)}
+            value={useSelector((state: RootState) => state.searchMovie.searchMovieName)}
             onChange={(e) => {
-                dispatch(setSearchMovieName(e.target.value));
+                dispatch(setSearchMovieName(e.target.value as string));
             }}
         />
     )

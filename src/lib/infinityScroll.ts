@@ -16,4 +16,5 @@ export default function infinityScroll(action: () => void) {
         window.removeEventListener("scroll", inifintyScrollAction);
     }
     window.addEventListener("scroll", inifintyScrollAction);
+    return removeScrollEvent
 }
