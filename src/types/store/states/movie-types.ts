@@ -1,59 +1,71 @@
-export interface Movie {
-    page: number;
-    results: MovieResult[];
-    total_pages: number;
-    total_results: number;
-}
+import { z } from 'zod';
 
-export interface MovieResult {
-    adult: boolean;
-    backdrop_path: string;
-    genre_ids: number[];
-    id: number;
-    orginal_language: string;
-    original_title: string;
-    overview: string;
-    popularity: number;
-    poster_path: string;
-    release_date: string;
-    title: string;
-    video: boolean;
-    vote_average: number;
-    vote_count: number;
-}
+export const MovieResultSchema = z.object({
+    backdrop_path: z.string().nullable(),
+    id: z.number(),
+    title: z.string(),
+    original_title: z.string(),
+    overview: z.string(),
+    poster_path: z.string().nullable(),
+    media_type: z.string().optional(),
+    adult: z.boolean(),
+    original_language: z.string(),
+    genre_ids: z.array(z.number()),
+    popularity: z.number(),
+    release_date: z.string(),
+    video: z.boolean(),
+    vote_average: z.number(),
+    vote_count: z.number(),
+});
 
-export interface MovieCredits {
-    id: number;
-    cast: Cast[];
-    crew: Crew[];
-}
+export const MovieSchema = z.object({
+    page: z.number(),
+    results: z.array(MovieResultSchema),
+    total_pages: z.number(),
+    total_results: z.number(),
+});
 
-export interface Cast {
-    adult: boolean;
-    gender: number;
-    id: number;
-    known_for_department: string;
-    name: string;
-    original_name: string;
-    popularity: number;
-    profile_path: string;
-    cast_id: number;
-    character: string;
-    credit_id: string;
-    order: number
-    cast_img: string;
-}
+export type Movie = z.infer<typeof MovieSchema>
+export type MovieResult = z.infer<typeof MovieResultSchema>
 
-export interface Crew {
-    adult: boolean;//Defaults to true
-    gender: number//Defaults to 0
-    id: number        //Defaults to 0
-    known_for_department: string
-    name: string
-    original_name: string
-    popularity: number//Defaults to 0
-    profile_path: string
-    credit_id: string
-    department: string
-    job: string
-}
+/** Credits */
+
+export const CastSchema = z.object({
+    adult: z.boolean(),
+    gender: z.number(),
+    id: z.number(),
+    known_for_department: z.string(),
+    name: z.string(),
+    original_name: z.string(),
+    popularity: z.number(),
+    profile_path: z.string(),
+    cast_id: z.number(),
+    character: z.string(),
+    credit_id: z.string(),
+    order: z.number(),
+    cast_img: z.string(),
+});
+
+export const CrewSchema = z.object({
+    adult: z.boolean(),
+    gender: z.number(),
+    id: z.number(),
+    known_for_department: z.string(),
+    name: z.string(),
+    original_name: z.string(),
+    popularity: z.number(),
+    profile_path: z.string(),
+    credit_id: z.string(),
+    department: z.string(),
+    job: z.string(),
+});
+
+export const MovieCreditsSchema = z.object({
+    id: z.number(),
+    cast: z.array(CastSchema),
+    crew: z.array(CrewSchema),
+});
+
+export type MovieCredits = z.infer<typeof MovieCreditsSchema>
+export type Cast = z.infer<typeof CastSchema>
+export type Crew = z.infer<typeof CrewSchema>
