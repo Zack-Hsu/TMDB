@@ -2,7 +2,7 @@ import { Movie, MovieResult, MovieCredits, MovieSchema, MovieResultSchema } from
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { z } from 'zod';
 
-const initSearchResult: Movie = {
+export const initSearchResult: Movie = {
     page: 0,
     results: [],
     total_pages: 0,

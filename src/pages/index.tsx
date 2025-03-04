@@ -2,15 +2,14 @@ import React, { useEffect, useMemo } from "react";
 import BaseLayout from "@/elements/layouts/BaseLayout";
 import infinityScroll from "@/lib/infinityScroll";
 import { useDispatch, useSelector } from 'react-redux';
-import MovieCard from "@/elements/components/MovieCard";
 import searchMovies from "@/service/tmdb/searchMovie";
 import { setFetchMovieLoader, setSearchResult } from "@/store/slices/searchMovie";
-import { Movie, MovieResult } from "@/types/store/states/movie-types";
+import { Movie } from "@/types/store/states/movie-types";
 import { RootState } from "@/store";
 import getTrendingMovie from "@/service/tmdb/getTrendingMovie";
-import MovieCardPopUp from "@/elements/components/MovieCardPopUp/MovieCardPopUp";
 import Spinner from "@/elements/components/Spinner/Spinner";
 import SearchMovieBar from "@/elements/components/SearchMovieBar/SearchMovieBar";
+import MovieCardContainer from "@/elements/components/MovieCardContainer/MovieCardContainer";
 
 
 export default function Index() {
@@ -65,9 +64,9 @@ export default function Index() {
     /** 當有查詢到結果的時候顯示搜尋結果標題，若沒有的話顯示推薦電影 */
     const Title = useMemo(() => {
         if (searchMovieName) {
-            return <h3 className="py-3">搜尋結果</h3>
+            return <h3 className="py-3 text-center">搜尋結果</h3>
         } else {
-            return <h3 className="py-3">推薦電影</h3>
+            return <h3 className="py-3 text-center">推薦電影</h3>
         }
     }, [searchMovieName])
     return (
@@ -77,15 +76,10 @@ export default function Index() {
                     <SearchMovieBar />
                 </div>
                 {Title}
-                <div className="row mt-3">
-                    {searchResult?.results?.map((movie: MovieResult) => {
-                        return <MovieCard key={movie.id} movie={movie} />
-                    })}
+                <div className="mt-3">
+                    <MovieCardContainer />
                 </div>
-                <MovieCardPopUp />
                 <Spinner loaderReduxState={fetchMovieLoader} />
-                <div className="">Current Page:{searchResult?.page}</div>
-                <div className="">Total Pages:{searchResult?.total_pages}</div>
             </div>
         </BaseLayout >
     );

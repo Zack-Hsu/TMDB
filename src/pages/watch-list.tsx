@@ -6,7 +6,9 @@ import { setSearchResult } from "@/store/slices/searchMovie";
 import { Movie, MovieResult } from "@/types/store/states/movie-types";
 import getWatchListMovies from "@/service/tmdb/watchList/getWatchListMovies";
 import { RootState } from "@/store";
-import MovieCardPopUp from "@/elements/components/MovieCardPopUp/MovieCardPopUp";
+import MovieCardContainer from "@/elements/components/MovieCardContainer/MovieCardContainer";
+import { useTMDBAuth } from "@/elements/components/LoginButton/LoginButton";
+import Link from "next/link";
 
 export default function WatchList() {
     const { searchResult } = useSelector((state: RootState) => state.searchMovie)
@@ -14,8 +16,6 @@ export default function WatchList() {
     const dispatch = useDispatch();
     const [selectedMovie, setSelectedMovie] = useState<MovieResult | null>(null);
     const [isSpinning, setIsSpinning] = useState(false);
-
-
     useEffect(() => {
         if (session.success && profile.id) {
             getWatchListMovies(profile.id, session.session_id, "created_at.asc")
@@ -34,27 +34,29 @@ export default function WatchList() {
             setIsSpinning(false);
         }, 1000);
     };
-
+    const { isLogin } = useTMDBAuth()
     return (
         <BaseLayout>
             <div className="container" data-bs-theme="dark">
-                <h3 className="py-3">待播清單</h3>
-                <div className="row">
-                    {searchResult?.results?.map((movie: MovieResult) => {
-                        return <MovieCard key={movie.id} movie={movie} isWatchList={true} />;
-                    })}
-                </div>
-                <MovieCardPopUp />
-                <div className="mt-4 text-center">
-                    <button className="btn btn-primary" onClick={handleLottery} disabled={isSpinning}>
-                        {isSpinning ? "轉盤轉動中..." : "隨機選片"}
-                    </button>
-                    {selectedMovie && (
-                        <MovieCard key={selectedMovie.id} movie={selectedMovie} isWatchList={true} />
-                    )}
-                </div>
-                <div className="">Current Page: {searchResult?.page}</div>
-                <div className="">Total Pages: {searchResult?.total_pages}</div>
+                {!isLogin && (<h5 className="mt-3">尚未登入，請<Link href="/" className="text-secondary">返回探索</Link></h5>)}
+                {isLogin && (
+                    <>
+                        <button className="btn btn--primary ms-3 mt-3" onClick={handleLottery} disabled={isSpinning}>
+                            {isSpinning ? "轉盤轉動中..." : "隨機選片"}
+                        </button>
+                        <div className="mt-4 text-center">
+                            {selectedMovie && (
+                                <MovieCard key={selectedMovie.id} movie={selectedMovie} isWatchList={true} />
+                            )}
+                        </div>
+                        <hr />
+                        <div className="mt-3">
+                            <h3 className="py-3 d-flex align-items-center">待播清單</h3>
+                            <MovieCardContainer />
+                        </div>
+                    </>
+                )}
+
             </div>
         </BaseLayout>
     );

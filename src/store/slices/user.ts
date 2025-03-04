@@ -12,7 +12,7 @@ const requestToken: RequestToken = {
 export const initSession: UserSession = { success: false, session_id: '' }; // 讀取 session
 
 
-const profile: UserInformation = {
+export const initProfile: UserInformation = {
     avatar: {
         gravatar: {
             hash: ''
@@ -38,7 +38,7 @@ const slice = createSlice({
     initialState: {
         requestToken: requestToken,
         session: initSession,
-        profile: profile,
+        profile: initProfile,
         watchList: watchList
     },
     reducers: {

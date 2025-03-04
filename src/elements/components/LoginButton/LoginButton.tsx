@@ -2,12 +2,13 @@ import styles from "./LoginButton.module.scss"
 import getTMDBRequestToken from "@/service/tmdb/getTMDBRequestToken";
 import { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { initSession, setProfile, setRequestToken, setSession } from "@/store/slices/user";
+import { initProfile, initSession, setProfile, setRequestToken, setSession } from "@/store/slices/user";
 import createSession from "@/service/tmdb/createSession";
 import getUserInformation from "@/service/tmdb/getUserInformation";
 import { UserInformation } from "@/types/store/states/userInfomation-type";
 import { RootState } from "@/store";
 import Link from "next/link";
+import { initSearchResult, setSearchResult } from "@/store/slices/searchMovie";
 //import useSessionFromLocalStorage from "@/lib/useSessionFromLocalStorage";
 export function useTMDBAuth() {
     const dispatch = useDispatch();
@@ -59,7 +60,9 @@ export function useTMDBAuth() {
     }, [session, profile]);
 
     const handleLogout = () => {
-        dispatch(setSession(initSession));
+        dispatch(setSession(initSession))
+        dispatch(setProfile(initProfile))
+        dispatch(setSearchResult(initSearchResult))
         getTMDBRequestToken().then(res => dispatch(setRequestToken(res)));
     };
     const WatchListLink = useMemo(() => (
