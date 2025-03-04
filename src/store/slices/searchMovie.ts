@@ -1,5 +1,6 @@
-import { Movie, MovieResult, MovieCredits } from '@/types/store/states/movie-types';
+import { Movie, MovieResult, MovieCredits, MovieSchema, MovieResultSchema } from '@/types/store/states/movie-types';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { z } from 'zod';
 
 const initSearchResult: Movie = {
     page: 0,
@@ -18,7 +19,7 @@ const initActiveMovie: MovieResult = {
     backdrop_path: '',
     genre_ids: [],
     id: 0,
-    orginal_language: '',
+    original_language: '',
     original_title: '',
     overview: '',
     popularity: 0,
@@ -27,13 +28,15 @@ const initActiveMovie: MovieResult = {
     title: '',
     video: false,
     vote_average: 0,
-    vote_count: 0
+    vote_count: 0,
+    media_type: ''
 }
 
 const slice = createSlice({
     name: 'searchMovie',
     initialState: {
         searchMovieName: '',
+        fetchMovieLoader: false,
         searchResult: initSearchResult,
         showMovieDetail: false,
         activeMovie: initActiveMovie,
@@ -43,8 +46,23 @@ const slice = createSlice({
         setSearchMovieName: (state, action: PayloadAction<string>) => {
             state.searchMovieName = action.payload;
         },
+        setFetchMovieLoader: (state, action: PayloadAction<boolean>) => {
+            state.fetchMovieLoader = action.payload
+        },
         setSearchResult: (state, action: PayloadAction<Movie>) => {
-            state.searchResult = action.payload
+            const MoviePreprocessedSchema = z.preprocess((data) => {
+                if (Array.isArray(data)) {
+                    return data[0];
+                }
+                return data;
+            }, MovieSchema);
+            const result = MoviePreprocessedSchema.safeParse(action.payload)
+            if (result.success) {
+                state.fetchMovieLoader = false
+                state.searchResult = result.data
+            } else {
+                console.log(result)
+            }
         },
         sortSearchResult: (state, action: PayloadAction<'asc' | 'desc'>) => {
             state.searchResult.results.sort((a, b) => {
@@ -57,7 +75,9 @@ const slice = createSlice({
             state.showMovieDetail = action.payload
         },
         setActiveMovie: (state, action: PayloadAction<MovieResult>) => {
-            state.activeMovie = action.payload
+            if (MovieResultSchema.safeParse(action.payload).success) {
+                state.activeMovie = action.payload
+            }
         },
         setMovieCredits: (state, action: PayloadAction<MovieCredits>) => {
             state.movieCredits = action.payload
@@ -67,6 +87,7 @@ const slice = createSlice({
 
 export const {
     setSearchMovieName,
+    setFetchMovieLoader,
     setSearchResult,
     sortSearchResult,
     setShowMovieDetail,

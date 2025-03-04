@@ -33,7 +33,7 @@ export default function MovieCard(props: { movie: MovieResult, isWatchList?: boo
         }
     }, [profile, session, activeMovie, isWatchList])
     const fullImageUrl = movie.poster_path
-        ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
+        ? `https://image.tmdb.org/t/p/w500${movie.poster_path}/`
         : `https://www.themoviedb.org/assets/2/v4/glyphicons/basic/glyphicons-basic-38-picture-grey-c2ebdbb057f2a7614185931650f8cee23fa137b93812ccb132b9df511df1cfac.svg`;
     return (
         <div key={movie.id} className="col-lg-4 col-sm-6 mb-3">

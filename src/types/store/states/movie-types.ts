@@ -1,12 +1,12 @@
 import { z } from 'zod';
 
 export const MovieResultSchema = z.object({
-    backdrop_path: z.string().nullable(),
+    backdrop_path: z.union([z.string(), z.null()]),
     id: z.number(),
     title: z.string(),
     original_title: z.string(),
     overview: z.string(),
-    poster_path: z.string().nullable(),
+    poster_path: z.union([z.string(), z.null()]),
     media_type: z.string().optional(),
     adult: z.boolean(),
     original_language: z.string(),

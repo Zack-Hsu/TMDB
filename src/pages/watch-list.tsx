@@ -8,21 +8,18 @@ import { Movie, MovieResult } from "@/types/store/states/movie-types";
 import getWatchListMovies from "@/service/tmdb/watchList/getWatchListMovies";
 import { RootState } from "@/store";
 import MovieCardPopUp from "@/elements/components/MovieCardPopUp/MovieCardPopUp";
-import { useRouter } from "next/router";
-import SortButtonGroup from "@/elements/components/SortButtons/SortButtonGroup/SortButtonGroup";
 
 export default function WatchList() {
     const { searchResult } = useSelector((state: RootState) => state.searchMovie)
     const { session, profile } = useSelector((state: RootState) => state.TMDBUser)
     const dispatch = useDispatch();
-    const router = useRouter();
     const [selectedMovie, setSelectedMovie] = useState<MovieResult | null>(null);
     const [isSpinning, setIsSpinning] = useState(false);
 
 
     useEffect(() => {
         if (session.success && profile.id) {
-            getWatchListMovies(profile.id, session.session_id)
+            getWatchListMovies(profile.id, session.session_id, "created_at.asc")
                 .then((data: Movie) => dispatch(setSearchResult(data)));
         } else {
             //router.push("/");
@@ -61,8 +58,6 @@ export default function WatchList() {
                 <div className="">Current Page: {searchResult?.page}</div>
                 <div className="">Total Pages: {searchResult?.total_pages}</div>
             </div>
-            <SortButtonGroup />
-
         </BaseLayout>
     );
 }

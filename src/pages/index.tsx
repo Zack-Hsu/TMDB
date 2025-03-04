@@ -5,12 +5,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import LoginButton from "@/elements/components/LoginButton/LoginButton";
 import MovieCard from "@/elements/components/MovieCard";
 import searchMovies from "@/service/tmdb/searchMovie";
-import { setSearchResult } from "@/store/slices/searchMovie";
+import { setFetchMovieLoader, setSearchResult } from "@/store/slices/searchMovie";
 import { Movie, MovieResult } from "@/types/store/states/movie-types";
 import { RootState } from "@/store";
 import getTrendingMovie from "@/service/tmdb/getTrendingMovie";
-import SortButtonGroup from "@/elements/components/SortButtons/SortButtonGroup/SortButtonGroup";
 import MovieCardPopUp from "@/elements/components/MovieCardPopUp/MovieCardPopUp";
+import Spinner from "@/elements/components/Spinner/Spinner";
 
 
 export default function Index() {
@@ -19,6 +19,7 @@ export default function Index() {
     /** 當有查詢到結果的時候，就啟用infinityScroll */
     useEffect(() => {
         const removeInfinityScroll = infinityScroll(() => {
+            dispatch(setFetchMovieLoader(true))
             if (searchMovieName == "") {
                 getTrendingMovie(searchResult.page + 1)
                     .then((res: Movie) => {
@@ -80,10 +81,10 @@ export default function Index() {
                     })}
                 </div>
                 <MovieCardPopUp />
+                <Spinner />
                 <div className="">Current Page:{searchResult?.page}</div>
                 <div className="">Total Pages:{searchResult?.total_pages}</div>
             </div>
-            <SortButtonGroup />
         </BaseLayout >
     );
 }

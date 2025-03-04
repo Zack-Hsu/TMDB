@@ -1,5 +1,5 @@
 import addToWatchList from "@/service/tmdb/watchList/addToWatchList"
-import styles from "@/elements/components/MovieCard/MovieCard.module.scss"
+import styles from "@/elements/components/MovieCardPopUp/MovieCardPopUp.module.scss"
 
 import { RootState } from "@/store"
 import { setShowMovieDetail } from "@/store/slices/searchMovie"
@@ -7,6 +7,26 @@ import Image from "next/image"
 import { useRouter } from "next/router"
 import { useEffect, useMemo, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
+//import ImageWithLoader from "../ImageWithLoader/ImageWithLoader"
+
+export function staticBlurDataUrl() {
+    const blurSvg = `
+      <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 5'>
+          <filter id='b' color-interpolation-filters='srgb'> 
+              <feGaussianBlur stdDeviation='1'/>
+          </filter>
+  
+          <rect preserveAspectRatio='none' filter='url(#b)' x='0' y='0' height='100%' width='100%' stroke-width="3" stroke="#BBF7D0"  fill="#15803D" />
+      </svg>
+  `;
+
+    const toBase64 = (str: string) =>
+        typeof window === "undefined"
+            ? Buffer.from(str).toString("base64")
+            : window.btoa(str);
+
+    return `data:image/svg+xml;base64,${toBase64(blurSvg)}`;
+}
 
 export default function MovieCardPopUp() {
     const dispatch = useDispatch()
@@ -43,6 +63,7 @@ export default function MovieCardPopUp() {
                     {movieCredits.cast.slice(0, 5).map((itm) => {
                         return <div key={itm.cast_id} className="border" style={{ width: "150px" }}>
                             <Image src={`https://media.themoviedb.org/t/p/w276_and_h350_face${itm.profile_path}`} width={0}
+                                loading="lazy"
                                 height={0}
                                 sizes="100vw"
                                 style={{ width: '150px', height: '150px', objectFit: "cover" }}
@@ -75,9 +96,11 @@ export default function MovieCardPopUp() {
                     <div className="card">
                         <div className="row m-0">
                             <div className="col-lg-4 p-3 d-flex justify-content-center align-items-center bg-light">
-                                <Image src={fullImageUrl}
+                                <Image
+                                    src={fullImageUrl}
                                     width={0}
                                     height={0}
+                                    sizes="100vw"
                                     style={{ width: 'auto', height: 'auto', maxWidth: "100%", maxHeight: "500px" }}
                                     className="card-img-top" alt="Waves"
                                 />
