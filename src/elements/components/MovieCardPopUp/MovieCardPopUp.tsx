@@ -9,24 +9,6 @@ import { useEffect, useMemo, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 //import ImageWithLoader from "../ImageWithLoader/ImageWithLoader"
 
-export function staticBlurDataUrl() {
-    const blurSvg = `
-      <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 5'>
-          <filter id='b' color-interpolation-filters='srgb'> 
-              <feGaussianBlur stdDeviation='1'/>
-          </filter>
-  
-          <rect preserveAspectRatio='none' filter='url(#b)' x='0' y='0' height='100%' width='100%' stroke-width="3" stroke="#BBF7D0"  fill="#15803D" />
-      </svg>
-  `;
-
-    const toBase64 = (str: string) =>
-        typeof window === "undefined"
-            ? Buffer.from(str).toString("base64")
-            : window.btoa(str);
-
-    return `data:image/svg+xml;base64,${toBase64(blurSvg)}`;
-}
 
 export default function MovieCardPopUp() {
     const dispatch = useDispatch()
@@ -59,10 +41,11 @@ export default function MovieCardPopUp() {
     const CastInformationCard = useMemo(() => {
         if (movieCredits.cast.length > 0) {
             return (
-                <div style={{ display: 'flex', width: '300px', overflowX: 'auto' }}>
+                <div style={{ display: 'flex', width: '300px', maxWidth: "100%", overflowX: 'auto' }}>
                     {movieCredits.cast.slice(0, 5).map((itm) => {
+                        const profileImg = itm.profile_path ? `https://media.themoviedb.org/t/p/w276_and_h350_face${itm.profile_path}` : `https://www.themoviedb.org/assets/2/v4/glyphicons/basic/glyphicons-basic-38-picture-grey-c2ebdbb057f2a7614185931650f8cee23fa137b93812ccb132b9df511df1cfac.svg`
                         return <div key={itm.cast_id} className="border" style={{ width: "150px" }}>
-                            <Image src={`https://media.themoviedb.org/t/p/w276_and_h350_face${itm.profile_path}`} width={0}
+                            <Image src={profileImg} width={0}
                                 loading="lazy"
                                 height={0}
                                 sizes="100vw"
