@@ -2,7 +2,6 @@ import React, { useEffect, useMemo } from "react";
 import BaseLayout from "@/elements/layouts/BaseLayout";
 import infinityScroll from "@/lib/infinityScroll";
 import { useDispatch, useSelector } from 'react-redux';
-import LoginButton from "@/elements/components/LoginButton/LoginButton";
 import MovieCard from "@/elements/components/MovieCard";
 import searchMovies from "@/service/tmdb/searchMovie";
 import { setFetchMovieLoader, setSearchResult } from "@/store/slices/searchMovie";
@@ -14,7 +13,7 @@ import Spinner from "@/elements/components/Spinner/Spinner";
 
 
 export default function Index() {
-    const { searchMovieName, searchResult } = useSelector((state: RootState) => state.searchMovie)
+    const { searchMovieName, searchResult, fetchMovieLoader } = useSelector((state: RootState) => state.searchMovie)
     const dispatch = useDispatch()
     /** 當有查詢到結果的時候，就啟用infinityScroll */
     useEffect(() => {
@@ -65,15 +64,14 @@ export default function Index() {
     /** 當有查詢到結果的時候顯示搜尋結果標題，若沒有的話顯示推薦電影 */
     const Title = useMemo(() => {
         if (searchMovieName) {
-            return <h3>搜尋結果</h3>
+            return <h3 className="py-3">搜尋結果</h3>
         } else {
-            return <h3>推薦電影</h3>
+            return <h3 className="py-3">推薦電影</h3>
         }
     }, [searchMovieName])
     return (
         <BaseLayout>
             <div className="container" data-bs-theme="dark">
-                <LoginButton />
                 {Title}
                 <div className="row mt-3">
                     {searchResult?.results?.map((movie: MovieResult) => {
@@ -81,7 +79,7 @@ export default function Index() {
                     })}
                 </div>
                 <MovieCardPopUp />
-                <Spinner />
+                <Spinner loaderReduxState={fetchMovieLoader} />
                 <div className="">Current Page:{searchResult?.page}</div>
                 <div className="">Total Pages:{searchResult?.total_pages}</div>
             </div>

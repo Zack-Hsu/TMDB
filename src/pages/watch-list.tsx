@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import BaseLayout from "@/elements/layouts/BaseLayout";
 import { useDispatch, useSelector } from 'react-redux';
-import LoginButton from "@/elements/components/LoginButton/LoginButton";
 import MovieCard from "@/elements/components/MovieCard";
 import { setSearchResult } from "@/store/slices/searchMovie";
 import { Movie, MovieResult } from "@/types/store/states/movie-types";
@@ -39,8 +38,7 @@ export default function WatchList() {
     return (
         <BaseLayout>
             <div className="container" data-bs-theme="dark">
-                <LoginButton />
-                <h3>待看清單</h3>
+                <h3 className="py-3">待播清單</h3>
                 <div className="row">
                     {searchResult?.results?.map((movie: MovieResult) => {
                         return <MovieCard key={movie.id} movie={movie} isWatchList={true} />;
