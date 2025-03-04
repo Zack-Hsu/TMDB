@@ -10,6 +10,7 @@ import { RootState } from "@/store";
 import getTrendingMovie from "@/service/tmdb/getTrendingMovie";
 import MovieCardPopUp from "@/elements/components/MovieCardPopUp/MovieCardPopUp";
 import Spinner from "@/elements/components/Spinner/Spinner";
+import SearchMovieBar from "@/elements/components/SearchMovieBar/SearchMovieBar";
 
 
 export default function Index() {
@@ -72,6 +73,9 @@ export default function Index() {
     return (
         <BaseLayout>
             <div className="container" data-bs-theme="dark">
+                <div className="w-100 py-3 d-flex justify-content-center">
+                    <SearchMovieBar />
+                </div>
                 {Title}
                 <div className="row mt-3">
                     {searchResult?.results?.map((movie: MovieResult) => {

@@ -8,7 +8,7 @@ export default function SearchMovieBar() {
         <input
             type="text"
             className="form-control me-2"
-            placeholder="Search for a movie..."
+            placeholder="搜尋電影 （建議使用英文）"
             value={useSelector((state: RootState) => state.searchMovie.searchMovieName)}
             onChange={(e) => {
                 dispatch(setSearchMovieName(e.target.value as string));
