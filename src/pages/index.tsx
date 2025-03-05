@@ -7,7 +7,6 @@ import { mergeToSearchResult, setFetchMovieLoader, setSearchResult } from "@/sto
 import { Movie } from "@/types/store/states/movie-types";
 import { RootState } from "@/store";
 import getTrendingMovie from "@/service/tmdb/getTrendingMovie";
-import Spinner from "@/elements/components/Spinner/Spinner";
 import SearchMovieBar from "@/elements/components/SearchMovieBar/SearchMovieBar";
 import MovieCardContainer from "@/elements/components/MovieCardContainer/MovieCardContainer";
 
@@ -70,7 +69,6 @@ export default function Index() {
                 <div className="mt-3">
                     <MovieCardContainer />
                 </div>
-                <Spinner loaderReduxState={fetchMovieLoader} />
             </div>
         </BaseLayout >
     );

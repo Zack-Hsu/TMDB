@@ -5,9 +5,10 @@ import { MovieResult } from "@/types/store/states/movie-types"
 import { useRouter } from "next/router"
 import Link from "next/link"
 import MovieCardPopUp from "../MovieCardPopUp/MovieCardPopUp"
+import Spinner from "../Spinner/Spinner"
 
 export default function MovieCardContainer() {
-    const { searchResult } = useSelector((state: RootState) => state.searchMovie)
+    const { searchResult, fetchMovieLoader } = useSelector((state: RootState) => state.searchMovie)
     const { pathname } = useRouter()
     if (searchResult.results.length == 0) {
         if (pathname == "/watch-list") {
@@ -21,6 +22,7 @@ export default function MovieCardContainer() {
                 return <MovieCard key={movie.id} movie={movie} />
             })}
             <MovieCardPopUp />
+            <Spinner loaderReduxState={fetchMovieLoader} />
         </div>
     )
 }
