@@ -1,6 +1,5 @@
-import { Movie, MovieResult, MovieCredits, MovieSchema, MovieResultSchema, MoviePreprocessedSchema } from '@/types/store/states/movie-types';
+import { Movie, MovieResult, MovieCredits, MovieResultSchema, MoviePreprocessedSchema, MovieStatus } from '@/types/store/states/movie-types';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { z } from 'zod';
 
 export const initSearchResult: Movie = {
     page: 0,
@@ -32,11 +31,18 @@ const initActiveMovie: MovieResult = {
     media_type: ''
 }
 
+const initStatus: MovieStatus = {
+    success: true,
+    errMessage: "",
+    noticeMessage: ""
+}
+
 const slice = createSlice({
     name: 'searchMovie',
     initialState: {
         searchMovieName: '',
         fetchMovieLoader: false,
+        status: initStatus,
         searchResult: initSearchResult,
         showMovieDetail: false,
         activeMovie: initActiveMovie,
@@ -49,27 +55,42 @@ const slice = createSlice({
         setFetchMovieLoader: (state, action: PayloadAction<boolean>) => {
             state.fetchMovieLoader = action.payload
         },
+        setStatus: (state, action: PayloadAction<boolean>) => {
+            state.status.success = action.payload
+            state.fetchMovieLoader = false
+        },
         setSearchResult: (state, action: PayloadAction<Movie>) => {
             const result = MoviePreprocessedSchema.safeParse(action.payload)
             if (result.success) {
                 state.fetchMovieLoader = false
                 state.searchResult = result.data
             } else {
+                state.status = {
+                    success: false,
+                    errMessage: "資料格式錯誤",
+                    noticeMessage: "再滑一次試試看^ ^"
+                }
                 console.log(result)
             }
         },
         mergeToSearchResult: (state, action: PayloadAction<Movie>) => {
-            let movieResults = [...state.searchResult.results, ...action.payload.results]
-            let payload = { ...action.payload, results: movieResults };
+            const movieResults = [...state.searchResult.results, ...action.payload.results]
+            const payload = { ...action.payload, results: movieResults };
             const result = MoviePreprocessedSchema.safeParse(payload)
             if (result.success) {
                 state.fetchMovieLoader = false
                 state.searchResult = result.data
             } else {
+                state.status = {
+                    success: false,
+                    errMessage: "資料格式錯誤",
+                    noticeMessage: "再滑一次試試看^ ^"
+                }
                 console.log(result)
             }
         },
         sortSearchResult: (state, action: PayloadAction<'asc' | 'desc'>) => {
+
             state.searchResult.results.sort((a, b) => {
                 return action.payload === 'asc'
                     ? a.title.localeCompare(b.title)
@@ -93,6 +114,7 @@ const slice = createSlice({
 export const {
     setSearchMovieName,
     setFetchMovieLoader,
+    setStatus,
     setSearchResult,
     mergeToSearchResult,
     sortSearchResult,

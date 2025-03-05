@@ -12,7 +12,7 @@ import MovieCardContainer from "@/elements/components/MovieCardContainer/MovieCa
 
 
 export default function Index() {
-    const { searchMovieName, searchResult, fetchMovieLoader } = useSelector((state: RootState) => state.searchMovie)
+    const { searchMovieName, searchResult } = useSelector((state: RootState) => state.searchMovie)
     const dispatch = useDispatch()
     /** 當有查詢到結果的時候，就啟用infinityScroll */
     useEffect(() => {

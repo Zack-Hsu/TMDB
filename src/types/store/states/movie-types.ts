@@ -24,9 +24,14 @@ export const MovieSchema = z.object({
     total_pages: z.number(),
     total_results: z.number(),
 });
-
+export const MovieStatus = z.object({
+    success: z.boolean(),
+    errMessage: z.string(),
+    noticeMessage: z.string(),
+})
 export type Movie = z.infer<typeof MovieSchema>
 export type MovieResult = z.infer<typeof MovieResultSchema>
+export type MovieStatus = z.infer<typeof MovieStatus>
 
 export const MoviePreprocessedSchema = z.preprocess((data) => {
     if (Array.isArray(data)) {
