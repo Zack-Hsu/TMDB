@@ -17,9 +17,7 @@ export default function Index() {
 
     /** 當有查詢到結果的時候，就啟用infinityScroll */
     useEffect(() => {
-        if (searchResult.page >= searchResult.total_pages) {
-            return
-        }
+        if (searchResult.page >= searchResult.total_pages) return
         const removeInfinityScroll = infinityScroll(() => {
             dispatch(setFetchMovieLoader(true))
             if (searchMovieName == "") {

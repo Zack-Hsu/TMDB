@@ -38,16 +38,17 @@ export function useTMDBAuth() {
             dispatch(setSession(storedSession));
         } else {
             const urlParams = new URLSearchParams(window.location.search);
-            const approved = urlParams.get("approved");
+            const isApproved = urlParams.get("approved") === 'true';
             const request_token = urlParams.get("request_token");
-
-            if (approved === "true" && request_token) {
+            const isDenied = urlParams.get("denied") === 'true';
+            if (isApproved && request_token) {
                 createSession(request_token)
                     .then(res => dispatch(setSession(res)))
                     .catch(() => getTMDBRequestToken().then(res => dispatch(setRequestToken(res))));
-            } else {
-                getTMDBRequestToken().then(res => dispatch(setRequestToken(res)));
+                return
             }
+            if (isDenied) alert("登入失敗")
+            getTMDBRequestToken().then(res => dispatch(setRequestToken(res)));
         }
     }, [dispatch]);
 
@@ -55,10 +56,9 @@ export function useTMDBAuth() {
         if (session.success && profile.id) {
             setIsLogin(true);
         } else {
-            setIsLogin(false)
+            setIsLogin(false);
         }
     }, [session, profile]);
-
     const handleLogout = () => {
         dispatch(setSession(initSession))
         dispatch(setProfile(initProfile))
