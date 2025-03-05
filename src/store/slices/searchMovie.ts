@@ -1,4 +1,4 @@
-import { Movie, MovieResult, MovieCredits, MovieSchema, MovieResultSchema } from '@/types/store/states/movie-types';
+import { Movie, MovieResult, MovieCredits, MovieSchema, MovieResultSchema, MoviePreprocessedSchema } from '@/types/store/states/movie-types';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { z } from 'zod';
 
@@ -50,13 +50,18 @@ const slice = createSlice({
             state.fetchMovieLoader = action.payload
         },
         setSearchResult: (state, action: PayloadAction<Movie>) => {
-            const MoviePreprocessedSchema = z.preprocess((data) => {
-                if (Array.isArray(data)) {
-                    return data[0];
-                }
-                return data;
-            }, MovieSchema);
             const result = MoviePreprocessedSchema.safeParse(action.payload)
+            if (result.success) {
+                state.fetchMovieLoader = false
+                state.searchResult = result.data
+            } else {
+                console.log(result)
+            }
+        },
+        mergeToSearchResult: (state, action: PayloadAction<Movie>) => {
+            let movieResults = [...state.searchResult.results, ...action.payload.results]
+            let payload = { ...action.payload, results: movieResults };
+            const result = MoviePreprocessedSchema.safeParse(payload)
             if (result.success) {
                 state.fetchMovieLoader = false
                 state.searchResult = result.data
@@ -89,6 +94,7 @@ export const {
     setSearchMovieName,
     setFetchMovieLoader,
     setSearchResult,
+    mergeToSearchResult,
     sortSearchResult,
     setShowMovieDetail,
     setActiveMovie,

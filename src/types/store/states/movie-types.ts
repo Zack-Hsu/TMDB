@@ -28,8 +28,14 @@ export const MovieSchema = z.object({
 export type Movie = z.infer<typeof MovieSchema>
 export type MovieResult = z.infer<typeof MovieResultSchema>
 
-/** Credits */
+export const MoviePreprocessedSchema = z.preprocess((data) => {
+    if (Array.isArray(data)) {
+        return data[0];
+    }
+    return data;
+}, MovieSchema);
 
+/** Credits */
 export const CastSchema = z.object({
     adult: z.boolean(),
     gender: z.number(),
