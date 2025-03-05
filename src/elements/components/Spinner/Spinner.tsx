@@ -6,7 +6,7 @@ export default function Spinner(props: { loaderReduxState?: boolean, loadingStat
     const distpatch = useDispatch()
     if (!props.loadingStatus?.success) {
         setTimeout(() => {
-            distpatch(setStatus(true))
+            distpatch(setStatus({ success: true }))
         }, 1000)
     }
     if (props.loaderReduxState) {

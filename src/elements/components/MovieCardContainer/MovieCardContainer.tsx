@@ -23,6 +23,7 @@ export default function MovieCardContainer() {
             })}
             <MovieCardPopUp />
             <Spinner loaderReduxState={fetchMovieLoader} loadingStatus={status} />
+            {searchResult.page == searchResult.total_pages && (<span className="w-100 text-secondary text-center pb-3" onClick={() => { window.scrollTo(0, 0) }}>... ^^ 已經到底囉 ^ ^  ...</span>)}
         </div>
     )
 }

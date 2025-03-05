@@ -26,8 +26,8 @@ export const MovieSchema = z.object({
 });
 export const MovieStatus = z.object({
     success: z.boolean(),
-    errMessage: z.string(),
-    noticeMessage: z.string(),
+    errMessage: z.string().optional(),
+    noticeMessage: z.string().optional(),
 })
 export type Movie = z.infer<typeof MovieSchema>
 export type MovieResult = z.infer<typeof MovieResultSchema>

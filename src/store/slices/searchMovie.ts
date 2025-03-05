@@ -55,8 +55,8 @@ const slice = createSlice({
         setFetchMovieLoader: (state, action: PayloadAction<boolean>) => {
             state.fetchMovieLoader = action.payload
         },
-        setStatus: (state, action: PayloadAction<boolean>) => {
-            state.status.success = action.payload
+        setStatus: (state, action: PayloadAction<MovieStatus>) => {
+            state.status.success = action.payload.success
             state.fetchMovieLoader = false
         },
         setSearchResult: (state, action: PayloadAction<Movie>) => {
